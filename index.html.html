@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Brain Dump</title>
+  <meta name="theme-color" content="#faf8f5" />
+  <style>
+    :root{
+      --bg:#faf8f5;
+      --card:#ffffff;
+      --card-2:#f5f1eb;
+      --text:#1f1f1f;
+      --muted:#7a746d;
+      --line:#ebe5dc;
+      --accent:#d06b43;
+      --accent-soft:#f8e7df;
+      --green:#2f7d58;
+      --green-soft:#e6f3ec;
+      --amber:#b1761a;
+      --amber-soft:#faefd9;
+      --red:#a94646;
+      --red-soft:#f9e3e3;
+      --shadow:0 10px 24px rgba(42,31,20,.06);
+      --radius:20px;
+      --radius-sm:14px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Inter,Helvetica,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      padding-bottom:100px;
+    }
+    .app{
+      max-width:1020px;
+      margin:0 auto;
+      padding:16px;
+    }
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+    }
+    .brand{
+      font-size:28px;
+      font-weight:800;
+      letter-spacing:-0.04em;
+    }
+    .subtitle{
+      color:var(--muted);
+      font-size:14px;
+      margin-top:4px;
+    }
+    .status-pill{
+      background:var(--card);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
+      border-radius:999px;
+      padding:10px 14px;
+      color:var(--muted);
+      font-size:13px;
+      max-width:48%;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .capture-card{
+      background:linear-gradient(180deg,#fff 0%, #fcfbf9 100%);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
+      border-radius:28px;
+      padding:18px;
+    }
+    .capture-heading{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:14px;
+    }
+    .capture-title{
+      font-size:30px;
+      font-weight:800;
+      letter-spacing:-0.05em;
+      line-height:1;
+      margin:0;
+    }
+    .capture-text{
+      color:var(--muted);
+      margin-top:8px;
+      line-height:1.45;
+      font-size:14px;
+    }
+    .quick-add{
+      display:grid;
+      grid-template-columns:1fr auto auto;
+      gap:10px;
+      margin-bottom:12px;
+    }
+    .quick-add input{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:18px;
+      padding:16px 18px;
+      font-size:17px;
+      outline:none;
+      color:var(--text);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
+    }
+    .quick-add button{
+      border:0;
+      border-radius:18px;
+      padding:15px 16px;
+      font-size:15px;
+      font-weight:800;
+      cursor:pointer;
+    }
+    .voice{
+      background:#fff;
+      border:1px solid var(--line) !important;
+      color:var(--text);
+      min-width:64px;
+    }
+    .add{
+      background:var(--text);
+      color:#fff;
+      min-width:82px;
+    }
+    .toolbar{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr 1fr auto;
+      gap:10px;
+      margin-top:10px;
+    }
+    .toolbar select,.toolbar input,.toolbar button{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:15px;
+      padding:13px 12px;
+      font-size:14px;
+      outline:none;
+      color:var(--text);
+    }
+    .toolbar button{
+      font-weight:700;
+      cursor:pointer;
+      background:var(--card-2);
+    }
+    .chip-row{
+      display:flex;
+      gap:8px;
+      overflow:auto;
+      padding-top:14px;
+    }
+    .chip{
+      white-space:nowrap;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:999px;
+      padding:10px 12px;
+      color:var(--muted);
+      font-size:13px;
+      cursor:pointer;
+    }
+    .dashboard{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+      margin-top:16px;
+    }
+    .stat{
+      background:var(--card);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
+      border-radius:18px;
+      padding:15px;
+    }
+    .stat-label{
+      color:var(--muted);
+      font-size:13px;
+      margin-bottom:8px;
+    }
+    .stat-value{
+      font-size:28px;
+      font-weight:800;
+      letter-spacing:-0.04em;
+    }
+    .section-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin:20px 0 12px;
+      flex-wrap:wrap;
+    }
+    .section-title{
+      font-size:21px;
+      font-weight:800;
+      letter-spacing:-0.03em;
+      margin:0;
+    }
+    .filters{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .filter{
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--muted);
+      border-radius:999px;
+      padding:9px 12px;
+      font-size:13px;
+      cursor:pointer;
+    }
+    .filter.active{
+      background:var(--accent-soft);
+      color:var(--accent);
+      border-color:#efd2c5;
+      font-weight:700;
+    }
+    .columns{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:14px;
+    }
+    .col{
+      background:var(--card);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
+      border-radius:24px;
+      overflow:hidden;
+      min-height:320px;
+    }
+    .col-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:16px;
+      border-bottom:1px solid var(--line);
+      background:linear-gradient(180deg,#fff 0%,#fcfaf7 100%);
+    }
+    .col-head h3{
+      margin:0;
+      font-size:16px;
+    }
+    .bubble{
+      min-width:30px;
+      height:30px;
+      display:grid;
+      place-items:center;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:800;
+    }
+    .pending .bubble{background:var(--accent-soft); color:var(--accent)}
+    .progress .bubble{background:var(--amber-soft); color:var(--amber)}
+    .done .bubble{background:var(--green-soft); color:var(--green)}
+    .list{
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .empty{
+      color:var(--muted);
+      text-align:center;
+      font-size:14px;
+      padding:18px 8px;
+    }
+    .task{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:14px;
+    }
+    .task-row{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+    }
+    .check{
+      width:24px;
+      height:24px;
+      border-radius:999px;
+      border:2px solid #d6cec4;
+      background:#fff;
+      cursor:pointer;
+      flex:0 0 24px;
+      margin-top:1px;
+      position:relative;
+    }
+    .check.done{
+      background:var(--green);
+      border-color:var(--green);
+    }
+    .check.done::after{
+      content:"✓";
+      color:#fff;
+      position:absolute;
+      inset:0;
+      display:grid;
+      place-items:center;
+      font-size:13px;
+      font-weight:800;
+    }
+    .task-title{
+      flex:1;
+      font-size:16px;
+      line-height:1.4;
+      font-weight:700;
+      word-break:break-word;
+    }
+    .task-title.done{
+      color:var(--muted);
+      text-decoration:line-through;
+    }
+    .star{
+      border:0;
+      background:none;
+      padding:0;
+      font-size:19px;
+      cursor:pointer;
+      line-height:1;
+    }
+    .meta{
+      margin:10px 0 12px 34px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .tag{
+      border-radius:999px;
+      font-size:12px;
+      padding:6px 9px;
+      background:#f6f3ee;
+      color:#655f58;
+    }
+    .tag.high{background:var(--red-soft); color:var(--red)}
+    .tag.medium{background:var(--amber-soft); color:var(--amber)}
+    .tag.low{background:#e8f0fb; color:#315f96}
+    .actions{
+      margin-left:34px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+    .mini{
+      border:0;
+      border-radius:12px;
+      padding:9px 11px;
+      font-size:12px;
+      font-weight:800;
+      cursor:pointer;
+    }
+    .mini.pending{background:var(--accent-soft); color:var(--accent)}
+    .mini.progress{background:var(--amber-soft); color:var(--amber)}
+    .mini.done{background:var(--green-soft); color:var(--green)}
+    .mini.delete{background:var(--red-soft); color:var(--red)}
+    .bottom-bar{
+      position:fixed;
+      left:0; right:0; bottom:0;
+      display:none;
+      gap:8px;
+      padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+      background:rgba(250,248,245,.94);
+      backdrop-filter:blur(10px);
+      border-top:1px solid var(--line);
+    }
+    .bottom-bar button{
+      flex:1;
+      border:0;
+      border-radius:16px;
+      padding:14px 12px;
+      font-size:15px;
+      font-weight:800;
+      cursor:pointer;
+    }
+    .bottom-bar .voice{background:#fff;border:1px solid var(--line);color:var(--text)}
+    .bottom-bar .add{background:var(--text);color:#fff}
+
+    @media (max-width: 920px){
+      .toolbar{grid-template-columns:1fr 1fr}
+      .dashboard{grid-template-columns:1fr 1fr}
+      .columns{grid-template-columns:1fr}
+      .status-pill{max-width:60%}
+      .bottom-bar{display:flex}
+      body{padding-bottom:102px}
+    }
+    @media (max-width: 560px){
+      .app{padding:12px}
+      .topbar{align-items:flex-start}
+      .brand{font-size:24px}
+      .status-pill{display:none}
+      .capture-title{font-size:26px}
+      .quick-add{grid-template-columns:1fr auto auto}
+      .toolbar{grid-template-columns:1fr}
+      .dashboard{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div>
+        <div class="brand">Brain Dump</div>
+        <div class="subtitle">A calm task app for quick capture, voice input, and closing things off.</div>
+      </div>
+      <div class="status-pill" id="statusBar">Ready.</div>
+    </div>
+
+    <section class="capture-card">
+      <div class="capture-heading">
+        <div>
+          <h1 class="capture-title">Capture fast.</h1>
+          <div class="capture-text">Type or speak a task, let the app auto-sort it, and tap the circle when it’s done.</div>
+        </div>
+      </div>
+
+      <div class="quick-add">
+        <input id="taskInput" type="text" placeholder="Add a task… like ‘Pay ER bill for Ezra tomorrow’" />
+        <button id="voiceBtn" class="voice" type="button">🎤</button>
+        <button id="addBtn" class="add" type="button">Add</button>
+      </div>
+
+      <div class="toolbar">
+        <select id="categoryInput">
+          <option>Auto category</option>
+          <option>General</option>
+          <option>Home</option>
+          <option>Admin</option>
+          <option>Family</option>
+          <option>Work</option>
+          <option>Learning</option>
+          <option>Errands</option>
+          <option>Spiritual</option>
+        </select>
+        <select id="priorityInput">
+          <option value="medium">Priority: Medium</option>
+          <option value="high">Priority: High</option>
+          <option value="low">Priority: Low</option>
+        </select>
+        <select id="statusInput">
+          <option value="pending">Pending</option>
+          <option value="progress">In Progress</option>
+          <option value="done">Completed</option>
+        </select>
+        <input id="dueInput" type="date" />
+        <button id="clearDoneBtn" type="button">Clear Completed</button>
+      </div>
+
+      <div class="chip-row">
+        <button class="chip" data-quick="Call ">Call</button>
+        <button class="chip" data-quick="Pay bill for ">Pay bill</button>
+        <button class="chip" data-quick="Buy ">Buy</button>
+        <button class="chip" data-quick="Schedule ">Schedule</button>
+        <button class="chip" data-quick="Research ">Research</button>
+        <button class="chip" data-quick="Follow up on ">Follow up</button>
+        <button class="chip" data-quick="Send message to ">Send message</button>
+      </div>
+    </section>
+
+    <section class="dashboard">
+      <div class="stat"><div class="stat-label">Pending</div><div class="stat-value" id="pendingCount">0</div></div>
+      <div class="stat"><div class="stat-label">In Progress</div><div class="stat-value" id="progressCount">0</div></div>
+      <div class="stat"><div class="stat-label">Completed</div><div class="stat-value" id="doneCount">0</div></div>
+      <div class="stat"><div class="stat-label">Starred</div><div class="stat-value" id="starredCount">0</div></div>
+    </section>
+
+    <div class="section-head">
+      <h2 class="section-title">Your tasks</h2>
+      <div class="filters" id="filterBar">
+        <button class="filter active" data-filter="all">All</button>
+        <button class="filter" data-filter="today">Today</button>
+        <button class="filter" data-filter="starred">Starred</button>
+        <button class="filter" data-filter="Home">Home</button>
+        <button class="filter" data-filter="Admin">Admin</button>
+        <button class="filter" data-filter="Family">Family</button>
+        <button class="filter" data-filter="Work">Work</button>
+      </div>
+    </div>
+
+    <section class="columns">
+      <div class="col pending">
+        <div class="col-head"><h3>Pending</h3><div class="bubble" id="pendingBubble">0</div></div>
+        <div class="list" id="pendingList"></div>
+      </div>
+      <div class="col progress">
+        <div class="col-head"><h3>In Progress</h3><div class="bubble" id="progressBubble">0</div></div>
+        <div class="list" id="progressList"></div>
+      </div>
+      <div class="col done">
+        <div class="col-head"><h3>Completed</h3><div class="bubble" id="doneBubble">0</div></div>
+        <div class="list" id="doneList"></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="bottom-bar">
+    <button id="bottomVoice" class="voice" type="button">🎤 Voice</button>
+    <button id="bottomAdd" class="add" type="button">Add Task</button>
+  </div>
+
+<script>
+const STORAGE_KEY = "things_style_v3";
+
+const seedTasks = [
+  { id: crypto.randomUUID(), text: "Change bedsheets", category: "Home", priority: "medium", status: "pending", dueDate: "", starred: false, createdAt: new Date().toISOString() },
+  { id: crypto.randomUUID(), text: "Check apostille process for Colorado", category: "Admin", priority: "high", status: "pending", dueDate: "", starred: true, createdAt: new Date().toISOString() },
+  { id: crypto.randomUUID(), text: "Check ER bill for Ezra", category: "Family", priority: "medium", status: "done", dueDate: "", starred: false, createdAt: new Date().toISOString() }
+];
+
+const refs = {
+  taskInput: document.getElementById("taskInput"),
+  categoryInput: document.getElementById("categoryInput"),
+  priorityInput: document.getElementById("priorityInput"),
+  statusInput: document.getElementById("statusInput"),
+  dueInput: document.getElementById("dueInput"),
+  addBtn: document.getElementById("addBtn"),
+  bottomAdd: document.getElementById("bottomAdd"),
+  voiceBtn: document.getElementById("voiceBtn"),
+  bottomVoice: document.getElementById("bottomVoice"),
+  clearDoneBtn: document.getElementById("clearDoneBtn"),
+  statusBar: document.getElementById("statusBar"),
+  filterBar: document.getElementById("filterBar"),
+  pendingCount: document.getElementById("pendingCount"),
+  progressCount: document.getElementById("progressCount"),
+  doneCount: document.getElementById("doneCount"),
+  starredCount: document.getElementById("starredCount"),
+  pendingBubble: document.getElementById("pendingBubble"),
+  progressBubble: document.getElementById("progressBubble"),
+  doneBubble: document.getElementById("doneBubble"),
+  pendingList: document.getElementById("pendingList"),
+  progressList: document.getElementById("progressList"),
+  doneList: document.getElementById("doneList")
+};
+
+const todayISO = () => new Date().toISOString().slice(0,10);
+
+function say(msg){
+  refs.statusBar.textContent = msg;
+}
+
+function loadTasks(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(seedTasks));
+      return seedTasks;
+    }
+    return JSON.parse(raw);
+  } catch {
+    say("Local saving may be blocked in this preview. Best in Safari or Chrome.");
+    return [...seedTasks];
+  }
+}
+
+let tasks = loadTasks();
+let activeFilter = "all";
+
+function saveTasks(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+  } catch {
+    say("Could not save tasks here. Open in Safari or Chrome.");
+  }
+}
+
+function parseNaturalDate(text){
+  const t = text.toLowerCase();
+  const d = new Date();
+  if(t.includes("today")) return d.toISOString().slice(0,10);
+  if(t.includes("tomorrow")){
+    d.setDate(d.getDate()+1);
+    return d.toISOString().slice(0,10);
+  }
+  if(t.includes("next week")){
+    d.setDate(d.getDate()+7);
+    return d.toISOString().slice(0,10);
+  }
+  return "";
+}
+
+function cleanTaskText(text){
+  return text.replace(/\b(today|tomorrow|next week)\b/gi,"").replace(/\s+/g," ").trim();
+}
+
+function guessCategory(text){
+  const t = text.toLowerCase();
+  if(/ezra|rivka|baby|kids|doctor|pediatrician|school|family/.test(t)) return "Family";
+  if(/apostille|passport|certificate|postal|notary|bill|bank|insurance|application|oci|form/.test(t)) return "Admin";
+  if(/bedsheet|laundry|clean|bathroom|kitchen|groceries|house|cook/.test(t)) return "Home";
+  if(/dashboard|meeting|client|report|email|sql|jira|work|quicksight/.test(t)) return "Work";
+  if(/datacamp|course|learn|study|read|practice/.test(t)) return "Learning";
+  if(/church|pray|prayer|bible|worship|devotional/.test(t)) return "Spiritual";
+  if(/buy|pickup|drop|return|shop/.test(t)) return "Errands";
+  return "General";
+}
+
+function priorityRank(p){
+  return {high:0, medium:1, low:2}[p] ?? 1;
+}
+
+function addTask(){
+  const rawText = refs.taskInput.value.trim();
+  if(!rawText){
+    say("Type a task or use voice capture first.");
+    refs.taskInput.focus();
+    return;
+  }
+
+  const derivedDate = refs.dueInput.value || parseNaturalDate(rawText);
+  const cleanedText = cleanTaskText(rawText);
+  const category = refs.categoryInput.value === "Auto category" ? guessCategory(cleanedText) : refs.categoryInput.value;
+
+  const item = {
+    id: crypto.randomUUID(),
+    text: cleanedText,
+    category,
+    priority: refs.priorityInput.value,
+    status: refs.statusInput.value,
+    dueDate: derivedDate,
+    starred: false,
+    createdAt: new Date().toISOString()
+  };
+
+  tasks.unshift(item);
+  saveTasks();
+  refs.taskInput.value = "";
+  refs.categoryInput.value = "Auto category";
+  refs.priorityInput.value = "medium";
+  refs.statusInput.value = "pending";
+  refs.dueInput.value = "";
+  render();
+  say("Added: " + item.text);
+  refs.taskInput.focus();
+}
+
+function updateTask(id, patch){
+  tasks = tasks.map(t => t.id === id ? {...t, ...patch} : t);
+  saveTasks();
+  render();
+}
+
+function deleteTask(id){
+  const t = tasks.find(x => x.id === id);
+  tasks = tasks.filter(x => x.id !== id);
+  saveTasks();
+  render();
+  say(t ? "Deleted: " + t.text : "Deleted.");
+}
+
+function clearCompleted(){
+  const n = tasks.filter(t => t.status === "done").length;
+  tasks = tasks.filter(t => t.status !== "done");
+  saveTasks();
+  render();
+  say(n ? `Cleared ${n} completed task${n>1?"s":""}.` : "No completed tasks to clear.");
+}
+
+function filteredTasks(){
+  let arr = [...tasks];
+  if(activeFilter === "today") arr = arr.filter(t => t.dueDate === todayISO());
+  else if(activeFilter === "starred") arr = arr.filter(t => t.starred);
+  else if(activeFilter !== "all") arr = arr.filter(t => t.category === activeFilter);
+  return arr;
+}
+
+function sortTasks(arr){
+  return arr.sort((a,b) => {
+    if(a.starred !== b.starred) return a.starred ? -1 : 1;
+    if((a.dueDate || "9999-12-31") !== (b.dueDate || "9999-12-31")) return (a.dueDate || "9999-12-31").localeCompare(b.dueDate || "9999-12-31");
+    if(priorityRank(a.priority) !== priorityRank(b.priority)) return priorityRank(a.priority) - priorityRank(b.priority);
+    return new Date(b.createdAt) - new Date(a.createdAt);
+  });
+}
+
+function tag(text, cls=""){
+  const el = document.createElement("span");
+  el.className = "tag " + cls;
+  el.textContent = text;
+  return el;
+}
+
+function taskCard(task){
+  const card = document.createElement("div");
+  card.className = "task";
+
+  const row = document.createElement("div");
+  row.className = "task-row";
+
+  const check = document.createElement("button");
+  check.className = "check" + (task.status === "done" ? " done" : "");
+  check.type = "button";
+  check.onclick = () => updateTask(task.id, {status: task.status === "done" ? "pending" : "done"});
+
+  const title = document.createElement("div");
+  title.className = "task-title" + (task.status === "done" ? " done" : "");
+  title.textContent = task.text;
+
+  const star = document.createElement("button");
+  star.className = "star";
+  star.type = "button";
+  star.textContent = task.starred ? "⭐️" : "☆";
+  star.onclick = () => updateTask(task.id, {starred: !task.starred});
+
+  row.append(check, title, star);
+
+  const meta = document.createElement("div");
+  meta.className = "meta";
+  meta.appendChild(tag(task.category));
+  meta.appendChild(tag(task.priority.charAt(0).toUpperCase() + task.priority.slice(1), task.priority));
+  if(task.dueDate){
+    meta.appendChild(tag(task.dueDate === todayISO() ? "Today" : task.dueDate));
+  }
+
+  const actions = document.createElement("div");
+  actions.className = "actions";
+
+  if(task.status !== "pending"){
+    const b = document.createElement("button");
+    b.className = "mini pending";
+    b.textContent = "Pending";
+    b.onclick = () => updateTask(task.id, {status:"pending"});
+    actions.appendChild(b);
+  }
+  if(task.status !== "progress"){
+    const b = document.createElement("button");
+    b.className = "mini progress";
+    b.textContent = "In Progress";
+    b.onclick = () => updateTask(task.id, {status:"progress"});
+    actions.appendChild(b);
+  }
+  if(task.status !== "done"){
+    const b = document.createElement("button");
+    b.className = "mini done";
+    b.textContent = "Close It";
+    b.onclick = () => updateTask(task.id, {status:"done"});
+    actions.appendChild(b);
+  }
+  const del = document.createElement("button");
+  del.className = "mini delete";
+  del.textContent = "Delete";
+  del.onclick = () => deleteTask(task.id);
+  actions.appendChild(del);
+
+  card.append(row, meta, actions);
+  return card;
+}
+
+function renderColumn(el, status, emptyText){
+  el.innerHTML = "";
+  const items = sortTasks(filteredTasks().filter(t => t.status === status));
+  if(!items.length){
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = emptyText;
+    el.appendChild(empty);
+    return;
+  }
+  items.forEach(t => el.appendChild(taskCard(t)));
+}
+
+function renderStats(){
+  const arr = filteredTasks();
+  const pending = arr.filter(t => t.status === "pending").length;
+  const progress = arr.filter(t => t.status === "progress").length;
+  const done = arr.filter(t => t.status === "done").length;
+  const starred = arr.filter(t => t.starred).length;
+
+  refs.pendingCount.textContent = pending;
+  refs.progressCount.textContent = progress;
+  refs.doneCount.textContent = done;
+  refs.starredCount.textContent = starred;
+  refs.pendingBubble.textContent = pending;
+  refs.progressBubble.textContent = progress;
+  refs.doneBubble.textContent = done;
+}
+
+function render(){
+  renderStats();
+  renderColumn(refs.pendingList, "pending", "No pending tasks.");
+  renderColumn(refs.progressList, "progress", "Nothing in progress.");
+  renderColumn(refs.doneList, "done", "No completed tasks.");
+}
+
+refs.addBtn.onclick = addTask;
+refs.bottomAdd.onclick = addTask;
+refs.taskInput.addEventListener("keydown", e => {
+  if(e.key === "Enter"){
+    e.preventDefault();
+    addTask();
+  }
+});
+refs.clearDoneBtn.onclick = clearCompleted;
+
+document.querySelectorAll(".chip").forEach(btn => {
+  btn.addEventListener("click", () => {
+    refs.taskInput.value = btn.dataset.quick;
+    refs.taskInput.focus();
+    say("Quick phrase inserted.");
+  });
+});
+
+refs.filterBar.addEventListener("click", e => {
+  const btn = e.target.closest("[data-filter]");
+  if(!btn) return;
+  activeFilter = btn.dataset.filter;
+  [...refs.filterBar.querySelectorAll(".filter")].forEach(x => x.classList.remove("active"));
+  btn.classList.add("active");
+  render();
+});
+
+let recognition = null;
+let listening = false;
+
+function setupVoice(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR){
+    say("Voice capture is not supported in this preview/browser.");
+    return;
+  }
+  recognition = new SR();
+  recognition.lang = "en-US";
+  recognition.interimResults = true;
+  recognition.continuous = false;
+
+  recognition.onstart = () => {
+    listening = true;
+    refs.voiceBtn.textContent = "⏺";
+    refs.bottomVoice.textContent = "⏺ Listening";
+    say("Listening… say your task.");
+  };
+
+  recognition.onresult = (event) => {
+    let text = "";
+    for(let i = event.resultIndex; i < event.results.length; i++){
+      text += event.results[i][0].transcript;
+    }
+    refs.taskInput.value = text.trim();
+    say("Voice captured. Tap Add.");
+  };
+
+  recognition.onerror = (e) => {
+    let msg = "Voice capture error.";
+    if(e.error === "not-allowed") msg = "Microphone permission denied. Allow microphone access in Safari or Chrome.";
+    if(e.error === "no-speech") msg = "No speech detected. Try again.";
+    if(e.error === "audio-capture") msg = "No microphone found.";
+    say(msg);
+  };
+
+  recognition.onend = () => {
+    listening = false;
+    refs.voiceBtn.textContent = "🎤";
+    refs.bottomVoice.textContent = "🎤 Voice";
+  };
+}
+
+function startVoice(){
+  if(!recognition){
+    say("Voice capture not available in this browser.");
+    return;
+  }
+  try{
+    if(listening){
+      recognition.stop();
+      return;
+    }
+    recognition.start();
+  } catch {
+    say("Could not start voice capture.");
+  }
+}
+
+refs.voiceBtn.onclick = startVoice;
+refs.bottomVoice.onclick = startVoice;
+
+setupVoice();
+render();
+</script>
+</body>
+</html>
