@@ -561,6 +561,7 @@ function loadTasks(){
 
 let tasks = loadTasks();
 let activeFilter = "all";
+let editingTaskId = null;
 
 function saveTasks(){
   try{
@@ -605,6 +606,32 @@ function priorityRank(p){
   return {high:0, medium:1, low:2}[p] ?? 1;
 }
 
+function resetForm(){
+  refs.taskInput.value = "";
+  refs.categoryInput.value = "Auto category";
+  refs.priorityInput.value = "medium";
+  refs.statusInput.value = "pending";
+  refs.dueInput.value = "";
+  editingTaskId = null;
+  refs.addBtn.textContent = "Add";
+  if (refs.bottomAdd) refs.bottomAdd.textContent = "Add Task";
+}
+
+function startEditTask(id){
+  const task = tasks.find(t => t.id === id);
+  if(!task) return;
+  editingTaskId = id;
+  refs.taskInput.value = task.text || "";
+  refs.categoryInput.value = task.category || "Auto category";
+  refs.priorityInput.value = task.priority || "medium";
+  refs.statusInput.value = task.status || "pending";
+  refs.dueInput.value = task.dueDate || "";
+  refs.addBtn.textContent = "Save";
+  if (refs.bottomAdd) refs.bottomAdd.textContent = "Save Task";
+  refs.taskInput.focus();
+  say("Editing: " + task.text);
+}
+
 function addTask(){
   const rawText = refs.taskInput.value.trim();
   if(!rawText){
@@ -616,6 +643,23 @@ function addTask(){
   const derivedDate = refs.dueInput.value || parseNaturalDate(rawText);
   const cleanedText = cleanTaskText(rawText);
   const category = refs.categoryInput.value === "Auto category" ? guessCategory(cleanedText) : refs.categoryInput.value;
+
+  if(editingTaskId){
+    tasks = tasks.map(task => task.id === editingTaskId ? {
+      ...task,
+      text: cleanedText,
+      category,
+      priority: refs.priorityInput.value,
+      status: refs.statusInput.value,
+      dueDate: derivedDate
+    } : task);
+    saveTasks();
+    render();
+    say("Updated: " + cleanedText);
+    resetForm();
+    refs.taskInput.focus();
+    return;
+  }
 
   const item = {
     id: crypto.randomUUID(),
@@ -630,13 +674,9 @@ function addTask(){
 
   tasks.unshift(item);
   saveTasks();
-  refs.taskInput.value = "";
-  refs.categoryInput.value = "Auto category";
-  refs.priorityInput.value = "medium";
-  refs.statusInput.value = "pending";
-  refs.dueInput.value = "";
   render();
   say("Added: " + item.text);
+  resetForm();
   refs.taskInput.focus();
 }
 
@@ -742,6 +782,12 @@ function taskCard(task){
     b.onclick = () => updateTask(task.id, {status:"done"});
     actions.appendChild(b);
   }
+  const edit = document.createElement("button");
+  edit.className = "mini pending";
+  edit.textContent = "Edit";
+  edit.onclick = () => startEditTask(task.id);
+  actions.appendChild(edit);
+
   const del = document.createElement("button");
   del.className = "mini delete";
   del.textContent = "Delete";
